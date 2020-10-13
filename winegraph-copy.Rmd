@@ -1,0 +1,172 @@
+---
+title: "winegrape"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+runtime: shiny
+  
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(leaflet)
+library(readr)
+library(plotly)
+library(tidyr)
+
+stations_df <- read.csv('http://s3.amazonaws.com/assets.datacamp.com/production/course_6355/datasets/stations_data.csv')
+trips_df <- read_csv('http://s3.amazonaws.com/assets.datacamp.com/production/course_6355/datasets/sanfran_bikeshare_joined_oneday.csv')
+
+alldata <- read.csv(file = "~/Desktop/allcountries.csv")
+clean <- drop_na(alldata)
+population <- clean$Population
+
+```
+
+Basic information
+======================================================================
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Minimum temperture
+
+```{r}
+
+```
+### Chart B
+```{r}
+
+p2 <- qplot(population,
+      geom="histogram",
+      binwidth = 3,  
+      main = "Histogram for Population", 
+      xlab = "population",  
+      fill=I("blue"), 
+      col=I("red"), 
+      alpha=I(.2),
+      xlim=c(20,50))
+
+p2
+```
+
+
+Map {data-width=650}
+-----------------------------------------------------------------------
+
+### Base layer map
+
+```{r}
+library(leaflet)
+leaflet() %>%
+  addTiles() %>%
+  addMarkers(lng = stations_df$longitude, lat = stations_df$latitude)
+```
+
+
+Grape A {data-navmenu=Hardiness} 
+==============================================================================
+Column {data-width=600}
+-----------------------------------------------------------------------
+### Grape line graph space
+``` {r}
+```
+
+
+
+Grape B {data-width=400}
+-----------------------------------------------------------------------
+<!-- sample value box for current temperture --> 
+
+### Plaece holder for Current temperture {data-width=400}
+```{r}
+
+median_min <- median(trips_df$duration_sec / 60) %>% round(digits = 1)
+valueBox(median_min,
+    caption = "Median Trip Duration (Minutes)",
+    icon = "fa-clock-o",
+    href = '#Basic information')
+
+```
+
+
+<!-- sample value box for classic- gauge --> 
+### Place holder for Hardiness gauge {data-width=600}
+```{r}
+num_trips <- nrow(trips_df)
+short_trips <- sum(trips_df$duration_sec < 600) # under 10 min
+pct_short_trips <- round(100 * short_trips / num_trips, 0)
+
+gauge(value = pct_short_trips,
+      min = 0,
+      max = 100)
+```
+
+
+Grape B {data-navmenu=Hardiness} 
+==============================================================================
+Column {data-width=600}
+-----------------------------------------------------------------------
+<!-- Sample gauge that change color when value is in certain inverval --> 
+### Hardiness model
+```{r}
+
+```
+
+Column {data-width=400}
+-----------------------------------------------------------------------
+<!-- sample value box for current temperture --> 
+### PlaceHolder for Hardiness gauge
+```{r}
+num_trips <- nrow(trips_df)
+short_trips <- sum(trips_df$duration_sec < 600) # under 10 min
+pct_short_trips <- round(100 * short_trips / num_trips, 0)
+
+gauge(value = pct_short_trips,
+      min = 0,
+      max = 100,
+      sectors = gaugeSectors(success = c(67, 100),
+                             warning = c(33, 66),
+                             danger = c(0, 32)))
+
+```
+
+### PlaceHolder for Hardiness value
+```{r}
+
+```
+
+
+Weather information 
+==============================================================================
+Top {data-height=600}
+------------------------------------------------------------------------------
+### Climate data
+```{r}
+
+```
+
+### Forcast weather data
+```{r}
+
+```
+
+
+Bottom {data-height=400}
+------------------------------------------------------------------------------
+
+### Gauge
+```{r}
+
+
+```
+
+### backup weather graph spot
+```{r}
+
+```
+
+### backup weather graph spot
+```{r}
+
+```
